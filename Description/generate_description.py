@@ -44,20 +44,3 @@ class Description:
         do_sample=True
     )
         return tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-
-#Step3: The main program
-import torch
-torch.cuda.empty_cache()
-
-code_snippet = '''
-def calculate_area(length, width):
-    return length * width
-
-length = float(input("Enter the length of the rectangle: "))
-width = float(input("Enter the width of the rectangle: "))
-area = calculate_area(length, width)
-print(f"The area of the rectangle is: {area}")
-    '''
-description = Description(code_snippet)
-print("Description of the code:")
-print(description.get_code_description())
