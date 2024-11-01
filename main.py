@@ -11,7 +11,6 @@ print(f"The area of the rectangle is: {area}")
     '''
 
 description = Description(code_snippet)
-
+des = description.get_code_description()
 print("Description of the code:")
-#description is an str => need to optimize the output shown
-print(description.get_code_description())
+print(description.output(des))

@@ -44,3 +44,15 @@ class Description:
         do_sample=True
     )
         return tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
+    
+    #Step3: optimize the output => a list containing in each index the response to a question
+    def output(self, des):
+        import re
+        des = des[295:]
+        regex_pattern = r"(\d+\.\s.*?)(?=\n\n|##|\n\d+\.|$)"
+        items = re.findall(regex_pattern, des, re.DOTALL)
+        separated_sentences = []
+        split_sentences = re.split(r'\n?\s*\d+\.\s', items[0])
+        split_sentences = [sentence for sentence in split_sentences if sentence]
+        separated_sentences.extend(split_sentences)
+        return separated_sentences
