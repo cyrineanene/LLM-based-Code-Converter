@@ -19,6 +19,14 @@ with open(code_path, 'r') as file:
 parser = CodeParser([detect_lan(code_path)])
 tree = parser.parse_code(code, detect_lan(code_path))
 points_of_interest = parser.extract_points_of_interest(tree, detect_lan(code_path))
+grouped_nodes = parser.extract_points_of_interest_grouped(tree, "py")
+
+#testing the output
+for i in points_of_interest:
+    print("\n",i)
+
+for group in grouped_nodes:
+    print("\n",group)
 
 for i in points_of_interest:
   m=0
