@@ -339,6 +339,7 @@ class CodeParser:
             self.map_line_to_node_type(child, line_to_node_type, depth + 1)
 
         return line_to_node_type
+    
     def extract_points_of_interest_grouped(self, node: Node, file_extension: str) -> List[List[Tuple[Node, str]]]:
         """
         Extract points of interest, grouping nodes with their child nodes of interest.
