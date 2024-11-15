@@ -1,6 +1,7 @@
-huggingface_hub
-transformers
-torch 
-torchvision 
-torchaudio 
-python-dotenv
+# huggingface_hub
+# transformers
+# torch 
+# torchvision 
+# torchaudio 
+# python-dotenv
+langchain
