@@ -119,17 +119,50 @@ class CodeParser:
 
         return tree.root_node
 
-    def extract_points_of_interest(self, node: Node, file_extension: str) -> List[Tuple[Node, str]]:
+    # def extract_points_of_interest(self, node: Node, file_extension: str) -> List[Tuple[Node, str]]:
+    #     node_types_of_interest = self._get_node_types_of_interest(file_extension)
+
+    #     points_of_interest = []
+    #     if node.type in node_types_of_interest.keys():
+    #         points_of_interest.append((node, node_types_of_interest[node.type]))
+
+    #     for child in node.children:
+    #         points_of_interest.extend(self.extract_points_of_interest(child, file_extension))
+
+    #     return points_of_interest
+
+    def extract_points_of_interest_grouped(self, node: Node, file_extension: str) -> List[List[Tuple[Node, str]]]:
+        """
+        Extract points of interest, grouping nodes with their child nodes of interest.
+    
+        Args:
+            node (Node): The current AST node.
+            file_extension (str): The file extension to determine language-specific node types.
+    
+        Returns:
+            List[List[Tuple[Node, str]]]: A list of groups, where each group is a list of tuples (Node, Type).
+        """
         node_types_of_interest = self._get_node_types_of_interest(file_extension)
 
-        points_of_interest = []
+        grouped_points = []
+
+        # Check if the current node is a "grouping node" (e.g., a class or module)
         if node.type in node_types_of_interest.keys():
-            points_of_interest.append((node, node_types_of_interest[node.type]))
+            current_group = [(node, node_types_of_interest[node.type])]
 
-        for child in node.children:
-            points_of_interest.extend(self.extract_points_of_interest(child, file_extension))
+            # Process child nodes
+            for child in node.children:
+                child_groups = self.extract_points_of_interest_grouped(child, file_extension)
+                for group in child_groups:
+                    current_group.extend(group)
 
-        return points_of_interest
+            grouped_points.append(current_group)
+        else:
+            # Process children independently if the current node isn't a grouping node
+            for child in node.children:
+                grouped_points.extend(self.extract_points_of_interest_grouped(child, file_extension))
+
+        return grouped_points
 
     def _get_node_types_of_interest(self, file_extension: str) -> Dict[str, str]:
         node_types = {
@@ -339,37 +372,3 @@ class CodeParser:
             self.map_line_to_node_type(child, line_to_node_type, depth + 1)
 
         return line_to_node_type
-    
-    def extract_points_of_interest_grouped(self, node: Node, file_extension: str) -> List[List[Tuple[Node, str]]]:
-        """
-        Extract points of interest, grouping nodes with their child nodes of interest.
-    
-        Args:
-            node (Node): The current AST node.
-            file_extension (str): The file extension to determine language-specific node types.
-    
-        Returns:
-            List[List[Tuple[Node, str]]]: A list of groups, where each group is a list of tuples (Node, Type).
-        """
-        node_types_of_interest = self._get_node_types_of_interest(file_extension)
-
-        grouped_points = []
-
-        # Check if the current node is a "grouping node" (e.g., a class or module)
-        if node.type in node_types_of_interest.keys():
-            current_group = [(node, node_types_of_interest[node.type])]
-
-            # Process child nodes
-            for child in node.children:
-                child_groups = self.extract_points_of_interest_grouped(child, file_extension)
-                for group in child_groups:
-                    current_group.extend(group)
-
-            grouped_points.append(current_group)
-        else:
-            # Process children independently if the current node isn't a grouping node
-            for child in node.children:
-                grouped_points.extend(self.extract_points_of_interest_grouped(child, file_extension))
-
-        return grouped_points
-    
