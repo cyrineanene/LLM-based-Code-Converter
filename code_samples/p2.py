@@ -4,6 +4,7 @@ import random
 from typing import List, Tuple, Dict, Any
 from functools import wraps
 import time
+from functools import wraps
 
 # Metaclass for custom behavior
 class SingletonMeta(type):
@@ -131,3 +132,85 @@ if __name__ == "__main__":
     # Lambda and List Comprehension Test
     print(f"Even squares: {even_squares}")
     print(f"Filtered squares greater than 50: {filtered_squares}")
+
+class University:
+    """Outer class representing a university."""
+
+    def __init__(self, name: str):
+        self.name = name
+        self.departments = []
+
+    def add_department(self, department_name: str):
+        department = self.Department(department_name)
+        self.departments.append(department)
+        return department
+
+    def __str__(self):
+        return f"University: {self.name}, Departments: {[dept.name for dept in self.departments]}"
+
+    class Department:
+        """Nested class representing a department within a university."""
+
+        def __init__(self, name: str):
+            self.name = name
+            self.courses = []
+
+        def add_course(self, course_name: str, course_code: str):
+            course = self.Course(course_name, course_code)
+            self.courses.append(course)
+            return course
+
+        def __str__(self):
+            return f"Department: {self.name}, Courses: {[course.course_code for course in self.courses]}"
+
+        class Course:
+            """Nested class representing a course within a department."""
+
+            def __init__(self, name: str, code: str):
+                self.name = name
+                self.course_code = code
+                self.students = []
+
+            def add_student(self, student_name: str, student_id: int):
+                student = self.Student(student_name, student_id)
+                self.students.append(student)
+
+            def __str__(self):
+                return f"Course: {self.name}, Students: {[student.name for student in self.students]}"
+
+            class Student:
+                """Nested class representing a student within a course."""
+
+                def __init__(self, name: str, student_id: int):
+                    self.name = name
+                    self.student_id = student_id
+
+                def __str__(self):
+                    return f"Student: {self.name} (ID: {self.student_id})"
+
+
+# Example Usage
+if __name__ == "__main__":
+    # Create a university
+    university = University("TechVille University")
+
+    # Add a department
+    cs_department = university.add_department("Computer Science")
+
+    # Add courses to the department
+    algorithms_course = cs_department.add_course("Algorithms", "CS101")
+    ai_course = cs_department.add_course("Artificial Intelligence", "CS102")
+
+    # Add students to the courses
+    algorithms_course.add_student("Alice", 1001)
+    algorithms_course.add_student("Bob", 1002)
+    ai_course.add_student("Charlie", 1003)
+
+    # Print details
+    print(university)
+    for department in university.departments:
+        print(department)
+        for course in department.courses:
+            print(course)
+            for student in course.students:
+                print(student)

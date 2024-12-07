@@ -38,7 +38,7 @@ class CodeParser:
         self._install_parsers()
 
     def _install_parsers(self):
-        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+        # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s') This line allows the log  2024-12-07 17:41:48,040 - INFO - Successfully built and loaded python parser
 
         try:
             # Ensure cache directory exists
@@ -119,22 +119,21 @@ class CodeParser:
 
         return tree.root_node
 
-    # def extract_points_of_interest(self, node: Node, file_extension: str) -> List[Tuple[Node, str]]:
-    #     node_types_of_interest = self._get_node_types_of_interest(file_extension)
+    def extract_points_of_interest(self, node: Node, file_extension: str) -> List[Tuple[Node, str]]:
+        node_types_of_interest = self._get_node_types_of_interest(file_extension)
 
-    #     points_of_interest = []
-    #     if node.type in node_types_of_interest.keys():
-    #         points_of_interest.append((node, node_types_of_interest[node.type]))
+        points_of_interest = []
+        if node.type in node_types_of_interest.keys():
+            points_of_interest.append((node, node_types_of_interest[node.type]))
 
-    #     for child in node.children:
-    #         points_of_interest.extend(self.extract_points_of_interest(child, file_extension))
+        for child in node.children:
+            points_of_interest.extend(self.extract_points_of_interest(child, file_extension))
 
-    #     return points_of_interest
+        return points_of_interest
 
+    # Group all the classes together
     def extract_points_of_interest_grouped(self, node: Node, file_extension: str) -> List[List[Tuple[Node, str]]]:
         """
-        Extract points of interest, grouping nodes with their child nodes of interest.
-    
         Args:
             node (Node): The current AST node.
             file_extension (str): The file extension to determine language-specific node types.
@@ -142,13 +141,13 @@ class CodeParser:
         Returns:
             List[List[Tuple[Node, str]]]: A list of groups, where each group is a list of tuples (Node, Type).
         """
-        node_types_of_interest = self._get_node_types_of_interest(file_extension)
-
+        grouping_types=self._get_node_types_of_interest(file_extension)
         grouped_points = []
 
         # Check if the current node is a "grouping node" (e.g., a class or module)
-        if node.type in node_types_of_interest.keys():
-            current_group = [(node, node_types_of_interest[node.type])]
+
+        if node.type in grouping_types.keys():
+            current_group = [(node, grouping_types[node.type])]
 
             # Process child nodes
             for child in node.children:
@@ -167,11 +166,56 @@ class CodeParser:
     def _get_node_types_of_interest(self, file_extension: str) -> Dict[str, str]:
         node_types = {
             'py': {
-                'import_statement': 'Import',
-                'export_statement': 'Export',
+                'import_statement': 'Import Statement',
+                'import_from_statement': 'Import From Statement',
                 'class_definition': 'Class',
                 'function_definition': 'Function',
+                'expression_statement': 'Expression Statement',
+                'assignment': 'Assignment',
+                'augmented_assignment': 'Augmented Assignment',
+                'return_statement': 'Return Statement',
+                'pass_statement': 'Pass Statement',
+                'assert_statement': 'Assert Statement',
+                'raise_statement': 'Raise Statement',
+                'del_statement': 'Delete Statement',
+                'if_statement': 'If Statement',
+                'elif_clause': 'Elif Clause',
+                'else_clause': 'Else Clause',
+                'while_statement': 'While Loop',
+                'for_statement': 'For Loop',
+                'try_statement': 'Try Statement',
+                'except_clause': 'Except Clause',
+                'finally_clause': 'Finally Clause',
+                'with_statement': 'With Statement',
+                'binary_operator': 'Binary Operator',
+                'unary_operator': 'Unary Operator',
+                'comparison_operator': 'Comparison Operator',
+                'call': 'Function or Method Call',
+                'attribute': 'Attribute Access',
+                'subscript': 'Subscript or Indexing',
+                'lambda': 'Lambda Expression',
+                'global_statement': 'Global Declaration',
+                'nonlocal_statement': 'Nonlocal Declaration',
+                'decorator': 'Decorator',
+                'list': 'List Literal',
+                'dictionary': 'Dictionary Literal',
+                'set': 'Set Literal',
+                'tuple': 'Tuple Literal',
+                'list_comprehension': 'List Comprehension',
+                'dictionary_comprehension': 'Dictionary Comprehension',
+                'string': 'String Literal',
+                'integer': 'Integer Literal',
+                'float': 'Float Literal',
+                'boolean': 'Boolean Literal',
+                'none': 'None Literal',
+                'comment': 'Comment',
+                'argument_list': 'Argument List',
+                'parameters': 'Parameters',
+                'parenthesized_expression': 'Parenthesized Expression',
+                'slice': 'Slice Operation',
+                'ellipsis': 'Ellipsis',
             },
+
             'css': {
                 'tag_name': 'Tag',
                 '@media': 'Media Query',
@@ -219,7 +263,6 @@ class CodeParser:
             return node_types["ts"]
         else:
             raise ValueError("Unsupported file type")
-        
 
     def _get_nodes_for_comments(self, file_extension: str) -> Dict[str, str]:
         node_types = {
@@ -356,7 +399,6 @@ class CodeParser:
             line_content = code_lines[line_num - 1]  # Adjusting index for zero-based indexing
             print(f"line {line_num}: {', '.join(node_types)} | Code: {line_content}")
 
-
     def map_line_to_node_type(self, node, line_to_node_type=None, depth=0):
         if line_to_node_type is None:
             line_to_node_type = {}
@@ -372,3 +414,50 @@ class CodeParser:
             self.map_line_to_node_type(child, line_to_node_type, depth + 1)
 
         return line_to_node_type
+
+
+
+# import ast
+
+# class CodeParser:
+#     def __init__(self):
+#         self.imports = []
+#         self.classes = []
+#         self.functions = []
+#         self.global_statements = []
+
+#     def parse(self, code):
+#         tree = ast.parse(code)
+#         self._analyze(tree)
+
+#     def _analyze(self, node):
+#         # Traverse the AST and handle specific node types
+#         for child in ast.walk(node):
+#             if isinstance(child, ast.Import):
+#                 self._handle_import(child)
+#             elif isinstance(child, ast.ClassDef):
+#                 self._handle_class(child)
+#             elif isinstance(child, ast.FunctionDef):
+#                 self._handle_function(child)
+#             elif isinstance(child, ast.Global):
+#                 self._handle_global(child)
+
+#     def _handle_import(self, node):
+#         self.imports.extend(alias.name for alias in node.names)
+
+#     def _handle_class(self, node):
+#         self.classes.append(node.name)
+
+#     def _handle_function(self, node):
+#         self.functions.append(node.name)
+
+#     def _handle_global(self, node):
+#         self.global_statements.append(node.names)
+
+#     def get_summary(self):
+#         return {
+#             "imports": self.imports,
+#             "classes": self.classes,
+#             "functions": self.functions,
+#             "global_statements": self.global_statements,
+#         }
