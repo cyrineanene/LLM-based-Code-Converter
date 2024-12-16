@@ -160,7 +160,6 @@ class CodeParser:
             # Process children independently if the current node isn't a grouping node
             for child in node.children:
                 grouped_points.extend(self.extract_points_of_interest_grouped(child, file_extension))
-
         return grouped_points
 
     def _get_node_types_of_interest(self, file_extension: str) -> Dict[str, str]:
