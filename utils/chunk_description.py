@@ -59,7 +59,10 @@ class Description:
         split_sentences = [sentence for sentence in split_sentences if sentence]
         separated_sentences.extend(split_sentences)
         return separated_sentences
-    
+
+def full_describe(full_code):
+    #This func will geenrate a description for the full code using a AST/graph-based approach and Llama3.2 as the LLM
+    return 
 #-----------------Testing the code---------------------------------------- would be removed when we move to main.py in the final version of the pipeline
 code_snippet = '''
 def calculate_area(length, width):

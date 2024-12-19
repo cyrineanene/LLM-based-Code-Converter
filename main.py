@@ -1,23 +1,31 @@
-from utils.chunk_description import Description
+from utils.chunk_description import Description, full_describe
 from utils.chunk_translation import Translation
 from utils.chunking import Chunker
+from utils.assembly import Assembler
 
-
-#we will have to add a loop based on what the chunker will provide as an output!
-#for now, i will just consider the output to be a list of chunks, and the chunker class gets the input full code
+#Step 1: Chunking the code
 full_code = input('Enter the code: ')
-chunks = Chunker(full_code).chunking() #the chunking method is to seperate the full code and return a list of chunks, i supposed there are no parameters
+chunks = Chunker(full_code).chunking() 
 
-results = {chunk: [] for chunk in chunks}
-for chunk in chunks:
-    #Step 1: for each chunk, we will generate a description
-    description = Description(chunk)
-    result_description = description.output(description.get_code_description())
+results = {bloc_num: tuple() for bloc_num in chunks.keys()}
 
-    #Step 2: for each chunk, we will translate/convert/give its equivalent in Java
-    translated_code = Translation(chunk)
-    tran = translated_code.get_code_translated(result_description) #TODO: i need to change the output method of description to return a string not a list
+for bloc_num, chunk in chunks.items():
+    #Step 2: Extracting and Generating the description for the global bloc's code
+    block_description = full_describe(chunk[0])
+    chunk.remove(chunk[0])
+    translated_chunks = []
+    for func in chunk:
+        for element in func:
+            #Step 3: Translate the chuck
+            #TODO: in here we need to add that the for loop will be moving forward as long as the max_length is not exceeded
+            translated_code = Translation(chunk)
+            tran = translated_code.get_code_translated(block_description)
+            translated_chunks.append(tran)
+            
+    #after the max_length reached and code translated
     
-    #Step 3: for now, storing in a hashmap the necessary informations: {chunk_python: [description, chunk_java], ... }
-    results[chunk].append(result_description)
-    results[chunk].append(tran)
+    #Step 4: for now, storing in a hashmap the necessary informations: {bloc_num: ('block_des', [[trans], ....])}
+    results[bloc_num]+=(block_description,translated_chunks)
+
+#Step 4: Assembling the code:
+final_code = Assembler(results)

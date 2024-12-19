@@ -42,7 +42,7 @@ class Translation:
             "6. Code Structure: Organize the Java code logically, adhering to Java conventions such as proper use of public static void main(String[] args) for executable programs. "
             
             "### Input Description: "
-            "A brief description of the code's purpose and functionality is provided to give context. Use this to guide the translation process."
+            "A brief description of the overall code's purpose and functionality is provided to give context. Use this to guide the translation process."
             "{description} "
             "### Input Python Code: "
             "A Python code snippet is provided for translation."
