@@ -28,4 +28,4 @@ for bloc_num, chunk in chunks.items():
     results[bloc_num]+=(block_description,translated_chunks)
 
 #Step 4: Assembling the code:
-final_code = Assembler(results)
+final_code = Assembler(results).assemble()
