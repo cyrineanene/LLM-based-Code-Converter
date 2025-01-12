@@ -7,7 +7,7 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 # code_path="code_samples/p1.py"
-code_path="code_samples/p3.py"
+code_path="code_samples/p2.py"
 
 def detect_lan(code_path):
         if code_path.endswith('.py'):

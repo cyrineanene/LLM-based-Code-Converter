@@ -132,36 +132,45 @@ class CodeParser:
         return points_of_interest
 
     # Group all the classes together
-    def extract_points_of_interest_grouped(self, node: Node, file_extension: str) -> List[List[Tuple[Node, str]]]:
+    def extract_points_of_interest_grouped(self, node: Node, file_extension: str, current_depth: int = 0, max_depth: int = 2) -> List[List[List[Tuple[Node, str]]]]:
         """
         Args:
             node (Node): The current AST node.
             file_extension (str): The file extension to determine language-specific node types.
-    
+            current_depth (int): The current depth in the node hierarchy.
+            max_depth (int): The maximum depth to process nodes.
+        
         Returns:
             List[List[Tuple[Node, str]]]: A list of groups, where each group is a list of tuples (Node, Type).
         """
-        grouping_types=self._get_node_types_of_interest(file_extension)
+        grouping_types = self._get_node_types_of_interest(file_extension)
         grouped_points = []
 
         # Check if the current node is a "grouping node" (e.g., a class or module)
+        if current_depth <= max_depth:
+            if node.type in grouping_types.keys():
+                current_group = [[(node, grouping_types[node.type])]]
 
-        if node.type in grouping_types.keys():
-            current_group = [(node, grouping_types[node.type])]
+                # Process child nodes
+                for child in node.children:
+                    child_groups = self.extract_points_of_interest_grouped(
+                        child, file_extension, current_depth + 1, max_depth
+                    )
+                    for group in child_groups:
+                        current_group.extend(group)
 
-            # Process child nodes
-            for child in node.children:
-                child_groups = self.extract_points_of_interest_grouped(child, file_extension)
-                for group in child_groups:
-                    current_group.extend(group)
+                grouped_points.append(current_group)
+            else:
+                # Process children independently if the current node isn't a grouping node
+                for child in node.children:
+                    grouped_points.extend(
+                        self.extract_points_of_interest_grouped(
+                            child, file_extension, current_depth, max_depth
+                        )
+                    )
 
-            grouped_points.append(current_group)
-        else:
-            # Process children independently if the current node isn't a grouping node
-            for child in node.children:
-                grouped_points.extend(self.extract_points_of_interest_grouped(child, file_extension))
         return grouped_points
-    
+
     # def extract_points_of_interest_grouped(self, node: Node, file_extension: str) -> List[List[List[Tuple[Node, str]]]]:
     #     """
     #     Args:
@@ -210,14 +219,6 @@ class CodeParser:
                 'import_from_statement': 'Import From Statement',
                 'class_definition': 'Class',
                 'function_definition': 'Function',
-                'expression_statement': 'Expression Statement',
-                'assignment': 'Assignment',
-                'augmented_assignment': 'Augmented Assignment',
-                'return_statement': 'Return Statement',
-                'pass_statement': 'Pass Statement',
-                'assert_statement': 'Assert Statement',
-                'raise_statement': 'Raise Statement',
-                'del_statement': 'Delete Statement',
                 'if_statement': 'If Statement',
                 'elif_clause': 'Elif Clause',
                 'else_clause': 'Else Clause',
@@ -227,33 +228,13 @@ class CodeParser:
                 'except_clause': 'Except Clause',
                 'finally_clause': 'Finally Clause',
                 'with_statement': 'With Statement',
-                'binary_operator': 'Binary Operator',
-                'unary_operator': 'Unary Operator',
-                'comparison_operator': 'Comparison Operator',
-                'call': 'Function or Method Call',
-                'attribute': 'Attribute Access',
-                'subscript': 'Subscript or Indexing',
+                'assignment': 'Assignment',
+                'return_statement': 'Return Statement',
                 'lambda': 'Lambda Expression',
-                'global_statement': 'Global Declaration',
-                'nonlocal_statement': 'Nonlocal Declaration',
                 'decorator': 'Decorator',
-                'list': 'List Literal',
-                'dictionary': 'Dictionary Literal',
-                'set': 'Set Literal',
-                'tuple': 'Tuple Literal',
                 'list_comprehension': 'List Comprehension',
                 'dictionary_comprehension': 'Dictionary Comprehension',
-                'string': 'String Literal',
-                'integer': 'Integer Literal',
-                'float': 'Float Literal',
-                'boolean': 'Boolean Literal',
-                'none': 'None Literal',
                 'comment': 'Comment',
-                'argument_list': 'Argument List',
-                'parameters': 'Parameters',
-                'parenthesized_expression': 'Parenthesized Expression',
-                'slice': 'Slice Operation',
-                'ellipsis': 'Ellipsis',
             },
 
             'css': {
