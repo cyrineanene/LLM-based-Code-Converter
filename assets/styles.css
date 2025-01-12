@@ -1,57 +1,93 @@
-/* Code container styles */
+/* Ensure the body and page content take full height */
+body, .stApp {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Container for the converted code */
 .code-container {
-    position: relative;
-    height: 472px;
-    overflow-y: scroll;
-    padding: 10px;
-    margin-top: 0px;
+    margin-bottom: 70px; /* Adjust as needed */
+    padding: 15px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-family: 'Courier New', monospace;
     white-space: pre-wrap;
-    background-color: #f5f5f5;
-    border-radius: 5px;
-    font-family: 'Arial', monospace;
+    margin-top: 20px;
+}
+
+/* Sticky form at the bottom */
+.stForm {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 10px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+/* Style for the title */
+.title-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.title-icon {
+    font-size: 48px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.title-text {
+    font-size: 24px;
+    color: #444;
 }
 
 /* Navbar styles */
 .navbar {
-    position: sticky;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #f5f5f5;
-    color: #333;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-family: 'Arial', monospace;
-    z-index: 1;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    align-items: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
 }
-
-/* Container for the buttons (copy) */
-.button-container {
+.stSidebar {
     display: flex;
-    gap: 10px; /* Adds space between the buttons */
-    align-items: center; /* Vertically center the buttons */
+    flex-direction: column;
+    height: 100%; /* Ensure the sidebar takes the full height of the screen */
+    width: 300px;
 }
 
-/* Button styles */
-.navbar button {
-    background-color: #f5f5f5;
-    color: #333;
+.stSidebar .stColumn {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center; /* Centers content horizontally */
+    align-items: flex-end; /* Aligns content to the bottom of the column */
+}
+
+
+/* Button styles for submission */
+.stButton>button {
+    background: linear-gradient(135deg, #6d5dfc, #ff4dff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
     border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
+    border-radius: 25px;
+    padding: 10px 20px;
     cursor: pointer;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
 }
 
-.navbar button span {
-    margin-left: 5px;
-}
-
-.navbar button:hover {
-    color: black;
+.stButton>button:hover {
+    background: linear-gradient(135deg, #ff4dff, #6d5dfc);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
