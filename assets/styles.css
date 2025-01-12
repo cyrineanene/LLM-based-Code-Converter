@@ -1,0 +1,57 @@
+/* Code container styles */
+.code-container {
+    position: relative;
+    height: 472px;
+    overflow-y: scroll;
+    padding: 10px;
+    margin-top: 0px;
+    white-space: pre-wrap;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    font-family: 'Arial', monospace;
+}
+
+/* Navbar styles */
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #f5f5f5;
+    color: #333;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-family: 'Arial', monospace;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Container for the buttons (copy) */
+.button-container {
+    display: flex;
+    gap: 10px; /* Adds space between the buttons */
+    align-items: center; /* Vertically center the buttons */
+}
+
+/* Button styles */
+.navbar button {
+    background-color: #f5f5f5;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.navbar button span {
+    margin-left: 5px;
+}
+
+.navbar button:hover {
+    color: black;
+}
