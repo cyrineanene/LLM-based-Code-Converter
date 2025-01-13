@@ -141,7 +141,7 @@ class CodeParser:
             max_depth (int): The maximum depth to process nodes.
         
         Returns:
-            List[List[Tuple[Node, str]]]: A list of groups, where each group is a list of tuples (Node, Type).
+            List[List[List[Tuple[Node, str]]]]: A list of groups, where each group is a list of tuples (Node, Type).
         """
         grouping_types = self._get_node_types_of_interest(file_extension)
         grouped_points = []
@@ -149,16 +149,25 @@ class CodeParser:
         # Check if the current node is a "grouping node" (e.g., a class or module)
         if current_depth <= max_depth:
             if node.type in grouping_types.keys():
+                # Initialize the current group with the parent node
                 current_group = [[(node, grouping_types[node.type])]]
 
                 # Process child nodes
+                child_points = []
                 for child in node.children:
+                    # Collect points of interest for the child node, recursively
                     child_groups = self.extract_points_of_interest_grouped(
                         child, file_extension, current_depth + 1, max_depth
                     )
                     for group in child_groups:
-                        current_group.extend(group)
+                        # Flatten groups of children into the current parent group
+                        child_points.extend(group)
 
+                # Only append the child points to the current group if there are any
+                if child_points:
+                    current_group.extend(child_points)
+
+                # Add the current group to the final result
                 grouped_points.append(current_group)
             else:
                 # Process children independently if the current node isn't a grouping node
