@@ -180,47 +180,6 @@ class CodeParser:
 
         return grouped_points
 
-    # def extract_points_of_interest_grouped(self, node: Node, file_extension: str) -> List[List[List[Tuple[Node, str]]]]:
-    #     """
-    #     Args:
-    #         node (Node): The current AST node.
-    #         file_extension (str): The file extension to determine language-specific node types.
-        
-    #     Returns:
-    #         List[List[List[Tuple[Node, str]]]]: A nested list structure with groups, their children, and individual elements.
-    #     """
-    #     grouping_types = self._get_node_types_of_interest(file_extension)
-    #     grouped_points = []
-        
-    #     # Check if the node is a grouping node (class, function, etc.)
-    #     if node.type in grouping_types:
-    #         group_name = grouping_types[node.type]  # Determine the type of the grouping node
-    #         group = [(node, group_name)]  # Start the group with the node itself
-
-    #         # Add this group to the primary list
-    #         grouped_points.append([group])  # Class/Function/Grouping node
-
-    #         # Process nested nodes (functions, attributes, statements, etc.)
-    #         for child in node.children:
-    #             # If the child node is another grouping node (e.g., another class or function)
-    #             if child.type in grouping_types:
-    #                 # Recursively extract its nested groups and nodes
-    #                 child_group = self.extract_points_of_interest_grouped(child, file_extension)
-    #                 grouped_points.extend(child_group)  # Add nested grouping
-
-    #             else:
-    #                 # If it's a non-grouping node (expression, statement, etc.), treat as a third-level element
-    #                 child_group = [(child, self._get_node_types_of_interest(file_extension).get(child.type, 'Other'))]
-    #                 grouped_points.append([child_group])  # Non-grouping elements go as secondary lists
-
-    #     else:
-    #         # If the current node isn't a grouping node, process it as a non-grouping node
-    #         for child in node.children:
-    #             child_groups = self.extract_points_of_interest_grouped(child, file_extension)
-    #             grouped_points.extend(child_groups)
-
-    #     return grouped_points
-
     def _get_node_types_of_interest(self, file_extension: str) -> Dict[str, str]:
         node_types = {
             'py': {
@@ -354,17 +313,19 @@ class CodeParser:
         tree = parser.parse(bytes(code, "utf8"))
 
         root_node = tree.root_node
-        points_of_interest = self.extract_points_of_interest(root_node, file_extension)
+        grouped_points_of_interest = self.extract_points_of_interest_grouped(root_node, file_extension)
 
         line_numbers_with_type_of_interest = {}
 
-        for node, type_of_interest in points_of_interest:
-            start_line = node.start_point[0] 
-            if type_of_interest not in line_numbers_with_type_of_interest:
-                line_numbers_with_type_of_interest[type_of_interest] = []
+        for group in grouped_points_of_interest:
+            for sub_group in group:
+                for node, type_of_interest in sub_group:
+                    start_line = node.start_point[0]
+                    if type_of_interest not in line_numbers_with_type_of_interest:
+                        line_numbers_with_type_of_interest[type_of_interest] = []
 
-            if start_line not in line_numbers_with_type_of_interest[type_of_interest]:
-                line_numbers_with_type_of_interest[type_of_interest].append(start_line)
+                    if start_line not in line_numbers_with_type_of_interest[type_of_interest]:
+                        line_numbers_with_type_of_interest[type_of_interest].append(start_line)
 
         lines_of_interest = []
         for _, line_numbers in line_numbers_with_type_of_interest.items():
@@ -444,50 +405,3 @@ class CodeParser:
             self.map_line_to_node_type(child, line_to_node_type, depth + 1)
 
         return line_to_node_type
-
-
-
-# import ast
-
-# class CodeParser:
-#     def __init__(self):
-#         self.imports = []
-#         self.classes = []
-#         self.functions = []
-#         self.global_statements = []
-
-#     def parse(self, code):
-#         tree = ast.parse(code)
-#         self._analyze(tree)
-
-#     def _analyze(self, node):
-#         # Traverse the AST and handle specific node types
-#         for child in ast.walk(node):
-#             if isinstance(child, ast.Import):
-#                 self._handle_import(child)
-#             elif isinstance(child, ast.ClassDef):
-#                 self._handle_class(child)
-#             elif isinstance(child, ast.FunctionDef):
-#                 self._handle_function(child)
-#             elif isinstance(child, ast.Global):
-#                 self._handle_global(child)
-
-#     def _handle_import(self, node):
-#         self.imports.extend(alias.name for alias in node.names)
-
-#     def _handle_class(self, node):
-#         self.classes.append(node.name)
-
-#     def _handle_function(self, node):
-#         self.functions.append(node.name)
-
-#     def _handle_global(self, node):
-#         self.global_statements.append(node.names)
-
-#     def get_summary(self):
-#         return {
-#             "imports": self.imports,
-#             "classes": self.classes,
-#             "functions": self.functions,
-#             "global_statements": self.global_statements,
-#         }
