@@ -1,6 +1,2 @@
 .venv/
-model starcoder/
-model codestral/
-model code t5/
-llama3/
-.env
+LLMs/
