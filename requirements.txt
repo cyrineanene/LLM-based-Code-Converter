@@ -6,6 +6,9 @@ torchvision==0.20.0
 torchaudio==2.5.0 
 tiktoken
 matplotlib
+nltk
+rouge-score 
+bert-score
 altair==5.3.0
 attrs==23.2.0
 blinker==1.7.0
