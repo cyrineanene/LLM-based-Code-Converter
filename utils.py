@@ -1,3 +1,9 @@
+def save_to_temp_file(code):
+    import tempfile
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode='w') as temp_file:
+        temp_file.write(code)
+        return temp_file.name
+    
 def get_code(code_path): 
             with open(code_path, 'r') as file:
                 generated_code = file.read()

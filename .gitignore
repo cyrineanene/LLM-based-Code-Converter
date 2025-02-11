@@ -1,2 +1,4 @@
 .venv/
 LLMs/
+__pycache__/
+chunking_folder/
